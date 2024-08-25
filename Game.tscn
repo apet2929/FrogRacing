@@ -1,0 +1,65 @@
+[gd_scene load_steps=7 format=3 uid="uid://j1bj1dnkejut"]
+
+[ext_resource type="PackedScene" uid="uid://dh2bahnrqgi57" path="res://scenes/player.tscn" id="1_fbpdh"]
+[ext_resource type="Script" path="res://game_manager.gd" id="1_xpcig"]
+[ext_resource type="Script" path="res://scripts/jump_charge_label.gd" id="2_2p17l"]
+[ext_resource type="PackedScene" uid="uid://dh3ef4y8udo4e" path="res://scenes/floor1.tscn" id="2_u1v6x"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jgxol"]
+friction = 0.53
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_835nx"]
+
+[node name="Game" type="Node2D"]
+
+[node name="GameManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("1_xpcig")
+
+[node name="Player" parent="." instance=ExtResource("1_fbpdh")]
+collision_layer = 3
+collision_mask = 3
+mass = 13.895
+physics_material_override = SubResource("PhysicsMaterial_jgxol")
+inertia = 1.32
+max_jump_impulse = 800
+hop_impulse = 180
+air_control = 90
+jump_angle = 60
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+
+[node name="JumpChargeLabel" type="RichTextLabel" parent="Player/Camera2D"]
+offset_left = -577.0
+offset_top = -322.0
+offset_right = -145.0
+offset_bottom = -282.0
+text = "Jump Charge: 0
+"
+script = ExtResource("2_2p17l")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(1, 83)
+collision_layer = 2
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("WorldBoundaryShape2D_835nx")
+
+[node name="Floor" type="Node" parent="."]
+
+[node name="FloorA2" parent="Floor" instance=ExtResource("2_u1v6x")]
+position = Vector2(197, -33)
+scale = Vector2(1, -14.64)
+
+[node name="FloorA" parent="Floor" instance=ExtResource("2_u1v6x")]
+position = Vector2(1, 91)
+scale = Vector2(50, 1)
+
+[node name="FloorA3" parent="Floor" instance=ExtResource("2_u1v6x")]
+position = Vector2(184, 1)
+scale = Vector2(-12.32, 1)
+
+[node name="FloorA4" parent="Floor" instance=ExtResource("2_u1v6x")]
+position = Vector2(168, -59)
+scale = Vector2(-2.56, 1)
