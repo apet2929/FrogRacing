@@ -16,6 +16,8 @@ enum Direction {
 @export var charge_duration = 1
 @export var air_control = 50
 @export var jump_angle = 45
+@export var grapple_force = 120
+@export var tongue_length = 200
 
 @onready var game_manager = %GameManager
 
@@ -28,15 +30,41 @@ var floors_in_contact = 0
 var last_jump = -1
 var jump_charge = 0
 var last_jump_charge = 0 
+var grapple_pos = null  # Vector2
 
-
-
+func calculate_grapple_pos():
+	print("Calculating grapple pos")
+	# TODO: Keep track of separate direction that doesn't get set to null (current solution is hacky)
+	if $AnimatedSprite2D.flip_h:
+		$TongueRay.target_position.x = -tongue_length
+	else:
+		$TongueRay.target_position.x = tongue_length
+	
+		
+	if $TongueRay.is_colliding():
+		var p = $TongueRay.get_collision_point()
+		var diff = p - self.position
+		if diff.length_squared() < 100:
+			set_grapple_pos(null)
+		else: 
+			set_grapple_pos(p)
+	else:
+		set_grapple_pos(null)
+	return grapple_pos
+	
+func set_grapple_pos(pos):
+	grapple_pos = pos
+	$Tongue.grapple_pos = pos
+	
+	
 func update_charge(delta):
 	if Input.is_action_pressed("ui_accept"):
 		jump_charge = move_toward(jump_charge, 1, delta / charge_duration)
 	else:
 		jump_charge = 0
-	game_manager.jump_charge = jump_charge
+		
+	if game_manager:
+		game_manager.jump_charge = jump_charge
 	return jump_charge
 
 func update_direction() -> int:
@@ -49,13 +77,20 @@ func update_direction() -> int:
 		direction = Direction.NONE
 		
 	if direction == Direction.LEFT:
-		$AnimatedSprite2D.flip_h = true
+		set_flipped(true)
 	elif direction == Direction.RIGHT:
-		$AnimatedSprite2D.flip_h = false
+		set_flipped(false)
 	return direction
 	
 func touching_ground() -> bool:
 	return floors_in_contact > 0
+	
+func set_flipped(flipped):
+	$AnimatedSprite2D.flip_h = flipped
+	if flipped:
+		$Tongue.position.x = -abs($Tongue.position.x)
+	else:
+		$Tongue.position.x = abs($Tongue.position.x)
 
 func jump():
 	var impulse = lerpf(0, max_jump_impulse * mass, last_jump_charge)
@@ -63,6 +98,11 @@ func jump():
 	state = States.HOP
 
 func idle_state(delta: float) -> void:
+	if !touching_ground():
+		state = States.HOP
+		hop_state(delta)
+		return
+	
 	if last_jump_charge != 0 && jump_charge == 0:
 		jump()
 	elif jump_charge == 0 && direction != Direction.NONE:
@@ -81,14 +121,36 @@ func hop_state(delta):
 		state = States.IDLE
 	else:
 		apply_central_force(Vector2(air_control * mass * direction, 0))
+		print(Input.is_action_pressed("grapple"))
+		if Input.is_action_pressed("grapple") && calculate_grapple_pos():
+			state = States.GRAPPLE
+			grapple_state(delta)
+		
 	
+func grapple_state(delta):
+	if grapple_pos == null:
+		state = States.IDLE
+		idle_state(delta)
+		return
+	
+	var diff = (grapple_pos - self.position)
+	if diff.length_squared() < 100 || !Input.is_action_pressed("grapple"):
+		set_grapple_pos(null)
+		state = States.IDLE
+		idle_state(delta)
+		return
 
+	var force_vector = grapple_force * (grapple_pos - self.position)
+	print(force_vector)
+	apply_central_force(force_vector)
 
 func process_state(delta):
 	if state == States.IDLE:
 		idle_state(delta)
 	elif state == States.HOP:
 		hop_state(delta)
+	elif state == States.GRAPPLE:
+		grapple_state(delta)
 	else:
 		pass
 
