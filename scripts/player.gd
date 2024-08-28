@@ -18,6 +18,7 @@ enum Direction {
 @export var jump_angle = 45
 @export var grapple_force = 120
 @export var tongue_length = 200
+@export var gravity_scl = 1.0 # defaults to 1
 
 @onready var game_manager = %GameManager
 
@@ -31,9 +32,15 @@ var last_jump = -1
 var jump_charge = 0
 var last_jump_charge = 0 
 var grapple_pos = null  # Vector2
+var buffered_jump_charge = -1
+var buffered_jump_timer = -1
+
+const jump_buffer_window_seconds = 5
+
+func _ready() -> void:
+	self.gravity_scale = gravity_scl
 
 func calculate_grapple_pos():
-	print("Calculating grapple pos")
 	# TODO: Keep track of separate direction that doesn't get set to null (current solution is hacky)
 	if $AnimatedSprite2D.flip_h:
 		$TongueRay.target_position.x = -tongue_length
@@ -93,35 +100,45 @@ func set_flipped(flipped):
 		$Tongue.position.x = abs($Tongue.position.x)
 
 func jump():
-	var impulse = lerpf(0, max_jump_impulse * mass, last_jump_charge)
+	var impulse = lerpf(hop_impulse, max_jump_impulse * mass, last_jump_charge)
 	self.apply_impulse(Vector2(impulse * direction * cos(deg_to_rad(jump_angle)), -impulse), Vector2.ZERO)
-	state = States.HOP
+	last_jump = 0
+	
+func hop():
+	if touching_ground() && direction != Direction.NONE && last_jump == -1:
+		print("hopping, last_jump=", last_jump)
+		var impulse = Vector2(hop_impulse * mass * direction * 0.5, -hop_impulse * mass)
+		self.apply_impulse(impulse, Vector2.ZERO)
+		last_jump = 0
 
 func idle_state(delta: float) -> void:
 	if !touching_ground():
 		state = States.HOP
 		hop_state(delta)
 		return
-	
+
 	if last_jump_charge != 0 && jump_charge == 0:
+		print("jumping")
+		jump()
+	elif buffered_jump_timer != -1 && buffered_jump_timer < jump_buffer_window_seconds:
+		print("buffering jump")
+		last_jump_charge = buffered_jump_charge
+		state = States.HOP
 		jump()
 	elif jump_charge == 0 && direction != Direction.NONE:
 		state = States.HOP
-		hop_state(delta)
-	
+		hop()
+	buffered_jump_charge = -1
+	buffered_jump_timer = -1
+
 func hop_state(delta):
-	if touching_ground() && jump_charge == 0:
-		if direction == Direction.NONE:
-			state = States.IDLE
-		elif last_jump == -1:
-			var impulse = Vector2(hop_impulse * mass * direction * 0.5, -hop_impulse * mass)
-			self.apply_impulse(impulse, Vector2.ZERO)
-			last_jump = 0
-	elif touching_ground():
+	if touching_ground() && last_jump == -1:
 		state = States.IDLE
 	else:
 		apply_central_force(Vector2(air_control * mass * direction, 0))
-		print(Input.is_action_pressed("grapple"))
+		if jump_charge == 0 && last_jump_charge != 0:
+			buffered_jump_charge = last_jump_charge
+			buffered_jump_timer = 0
 		if Input.is_action_pressed("grapple") && calculate_grapple_pos():
 			state = States.GRAPPLE
 			grapple_state(delta)
@@ -141,7 +158,6 @@ func grapple_state(delta):
 		return
 
 	var force_vector = grapple_force * (grapple_pos - self.position)
-	print(force_vector)
 	apply_central_force(force_vector)
 
 func process_state(delta):
@@ -163,6 +179,8 @@ func _physics_process(delta: float) -> void:
 
 	if last_jump != -1:
 		last_jump += delta
+	if buffered_jump_timer != -1:
+		buffered_jump_timer += delta
 
 func _on_body_entered(body: Node) -> void:
 	last_jump = -1
