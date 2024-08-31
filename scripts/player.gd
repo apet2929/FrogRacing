@@ -19,23 +19,33 @@ enum Direction {
 @export var grapple_force = 120
 @export var tongue_length = 200
 @export var gravity_scl = 1.0 # defaults to 1
+@export var forward_impulse = 100
 
 @onready var game_manager = %GameManager
 
 const SPEED = 300.0
 const JUMP_VELOCITY = -400.0
 var state = States.IDLE
-var direction = Direction.NONE
+var direction = Direction.NONE  # Current pressed direction on keyboard, usually NONE
+var facing_direction = Direction.RIGHT  # Direction Frog is facing, guaranteed to not be NONE
 var touched_ground_last_frame = false
 var floors_in_contact = 0
 var last_jump = -1
 var jump_charge = 0
+var effective_jump_charge = 0
 var last_jump_charge = 0 
 var grapple_pos = null  # Vector2
 var buffered_jump_charge = -1
 var buffered_jump_timer = -1
 
+
+# Temp flags
+var grapple_broke = false
+
+
 const jump_buffer_window_seconds = 5
+const num_jump_charge_chunks = 4
+
 
 func _ready() -> void:
 	self.gravity_scale = gravity_scl
@@ -62,24 +72,58 @@ func calculate_grapple_pos():
 func set_grapple_pos(pos):
 	grapple_pos = pos
 	$Tongue.grapple_pos = pos
+
+func apply_jump_impulse(vert_impulse):
+	self.apply_impulse(Vector2(forward_impulse * direction * mass, 0), Vector2.ZERO)
+	self.apply_impulse(Vector2(0, -vert_impulse), Vector2.ZERO)
+	last_jump = 0
+
+func calc_effective_jump_charge():
+	const chunk_size = 1.0 / num_jump_charge_chunks
+	var c = 1.0
+	while(1):
+		if c <= 0:
+			effective_jump_charge = 0
+			return
+		if jump_charge >= c:
+			effective_jump_charge = c
+			return
+		c -= chunk_size
+		
+func should_break_grapple():
+	var tongue_vector = (grapple_pos - self.position)
+	if tongue_vector.length_squared() < 100 || !Input.is_action_pressed("grapple"):
+		return true
+	var player_direction = Vector2(facing_direction, 0)
+	var angle_too_large = abs(player_direction.angle_to(tongue_vector)) > PI / 2
+	if angle_too_large:
+		print("Breaking grapple because angle is too large")
+	return angle_too_large
 	
-	
+func reset_flags():
+	grapple_broke = false
+
 func update_charge(delta):
 	if Input.is_action_pressed("ui_accept"):
 		jump_charge = move_toward(jump_charge, 1, delta / charge_duration)
 	else:
 		jump_charge = 0
+	
+	calc_effective_jump_charge()
 		
 	if game_manager:
 		game_manager.jump_charge = jump_charge
+		game_manager.effective_jump_charge = effective_jump_charge
 	return jump_charge
 
 func update_direction() -> int:
 	var d := Input.get_axis("ui_left", "ui_right")
 	if d == 1:
 		direction = Direction.RIGHT
+		facing_direction = Direction.RIGHT
 	elif d == -1:
 		direction = Direction.LEFT
+		facing_direction = Direction.LEFT
 	elif d == 0:
 		direction = Direction.NONE
 		
@@ -101,15 +145,13 @@ func set_flipped(flipped):
 
 func jump():
 	var impulse = lerpf(hop_impulse, max_jump_impulse * mass, last_jump_charge)
-	self.apply_impulse(Vector2(impulse * direction * cos(deg_to_rad(jump_angle)), -impulse), Vector2.ZERO)
-	last_jump = 0
+	apply_jump_impulse(impulse)
 	
 func hop():
 	if touching_ground() && direction != Direction.NONE && last_jump == -1:
-		print("hopping, last_jump=", last_jump)
-		var impulse = Vector2(hop_impulse * mass * direction * 0.5, -hop_impulse * mass)
-		self.apply_impulse(impulse, Vector2.ZERO)
-		last_jump = 0
+		var impulse = hop_impulse * mass
+		apply_jump_impulse(impulse)
+	
 
 func idle_state(delta: float) -> void:
 	if !touching_ground():
@@ -126,6 +168,7 @@ func idle_state(delta: float) -> void:
 		state = States.HOP
 		jump()
 	elif jump_charge == 0 && direction != Direction.NONE:
+		print("hopping")
 		state = States.HOP
 		hop()
 	buffered_jump_charge = -1
@@ -139,7 +182,7 @@ func hop_state(delta):
 		if jump_charge == 0 && last_jump_charge != 0:
 			buffered_jump_charge = last_jump_charge
 			buffered_jump_timer = 0
-		if Input.is_action_pressed("grapple") && calculate_grapple_pos():
+		if Input.is_action_pressed("grapple") && calculate_grapple_pos() && !grapple_broke:
 			state = States.GRAPPLE
 			grapple_state(delta)
 		
@@ -150,11 +193,12 @@ func grapple_state(delta):
 		idle_state(delta)
 		return
 	
-	var diff = (grapple_pos - self.position)
-	if diff.length_squared() < 100 || !Input.is_action_pressed("grapple"):
+	if should_break_grapple():
 		set_grapple_pos(null)
+		grapple_broke = true
 		state = States.IDLE
 		idle_state(delta)
+		
 		return
 
 	var force_vector = grapple_force * (grapple_pos - self.position)
@@ -171,12 +215,13 @@ func process_state(delta):
 		pass
 
 func _physics_process(delta: float) -> void:
-	last_jump_charge = jump_charge
+	last_jump_charge = effective_jump_charge
 	update_charge(delta)
 	update_direction()
 	
 	process_state(delta)
 
+	reset_flags()
 	if last_jump != -1:
 		last_jump += delta
 	if buffered_jump_timer != -1:

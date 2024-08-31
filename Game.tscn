@@ -7,9 +7,10 @@
 [ext_resource type="PackedScene" uid="uid://dk5vjrfp4k2mp" path="res://scenes/grapple_target.tscn" id="5_uwlq2"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_jgxol"]
-friction = 0.53
+friction = 0.45
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_835nx"]
+distance = -22.0
 
 [node name="Game" type="Node2D"]
 
@@ -28,6 +29,7 @@ hop_impulse = 180
 air_control = 90
 jump_angle = 60
 gravity_scl = 0.9
+forward_impulse = 150
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 
@@ -56,21 +58,29 @@ position = Vector2(197, -125)
 scale = Vector2(1, -14.64)
 
 [node name="FloorA" parent="Floor" instance=ExtResource("2_u1v6x")]
-position = Vector2(1, 91)
-scale = Vector2(50, 1)
+position = Vector2(840, 112)
+scale = Vector2(172.84, 1)
 
 [node name="FloorA3" parent="Floor" instance=ExtResource("2_u1v6x")]
-position = Vector2(184, 1)
+position = Vector2(1081, -120)
 scale = Vector2(-12.32, 1)
 
 [node name="FloorA4" parent="Floor" instance=ExtResource("2_u1v6x")]
 position = Vector2(168, -59)
 scale = Vector2(-2.56, 1)
 
+[node name="FloorA5" parent="Floor" instance=ExtResource("2_u1v6x")]
+position = Vector2(1354, -206)
+scale = Vector2(12.0692, 3.10696)
+
 [node name="Grapple Tagets" type="Node" parent="."]
 
 [node name="GrappleTarget" parent="Grapple Tagets" instance=ExtResource("5_uwlq2")]
-position = Vector2(186, 33)
-scale = Vector2(1.48993, 1.4821)
+position = Vector2(193, 47)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget2" parent="Grapple Tagets" instance=ExtResource("5_uwlq2")]
+position = Vector2(1085, -73)
+scale = Vector2(1.83068, 2.3693)
 
 [connection signal="draw" from="Player/Camera2D/JumpChargeLabel" to="Player/Camera2D/JumpChargeLabel" method="_on_draw"]
