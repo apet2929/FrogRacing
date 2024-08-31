@@ -20,6 +20,9 @@ enum Direction {
 @export var tongue_length = 200
 @export var gravity_scl = 1.0 # defaults to 1
 @export var forward_impulse = 100
+@export var hop_friction_threshold = 350  # How fast you have to be going before friction is reduced (so you don't accelerate infinitely when you just hold right)
+@export var friction_high = 0.85
+@export var friction_low = 0.45
 
 @onready var game_manager = %GameManager
 
@@ -222,6 +225,11 @@ func _physics_process(delta: float) -> void:
 	process_state(delta)
 
 	reset_flags()
+	if abs(self.linear_velocity.x) < hop_friction_threshold:
+		self.physics_material_override.friction = friction_high
+	else:
+		self.physics_material_override.friction = friction_low
+	
 	if last_jump != -1:
 		last_jump += delta
 	if buffered_jump_timer != -1:
