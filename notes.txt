@@ -1,0 +1,134 @@
+Todo:
+	- Finalize game design
+		- Scope
+		- Mechanics
+			- Progression system?
+		- Art design
+	- Create art
+		- Implement jumping animation
+		- Create tongue animation
+	- Create levels
+	- Create menus
+	- Create audio
+		- Sound effects
+		- Music
+
+
+Game Design:
+	
+Terms/Definitions:
+	- Crash: hard collision with wall 
+		- Lose a lot of momentum
+		- Should feel bad
+		- Slow to start again
+		- Failed Bhop
+	- Bhop: momentum kept when you jump soon after landing
+		- Should feel good
+		- Harder to keep momentum when you are going fast
+
+Inspirations:
+	- Duck Life (cutesy, racing, animals racing in urban setting)
+	- Speedrunners (momentum, flow, level design)
+	- Hollow Knight (shaders, hit effects, identifiable player states)
+	- Trackmania (fast-twitch inputs, momentum)
+
+Level Design:
+	- Large open levels
+	- Multiple paths i.e. Sonic
+	- Slow puzzle path, shorter
+	- Fast path, longer
+
+Art Design:
+	- Urban setting
+		- Sidewalk for the floor
+		- Lamp post grapple targets
+	- Large faceless, blurry, people looming in the background (implied betting, like Cock fighting)
+	- 
+
+Mechanics:
+	- Hop around with L and R arrows
+	- Charge big jumps
+		- Bhop if you time it right (release space some time before/after hitting the floor)
+	- Grapple onto targets with your tongue
+		- Automatic disengage if you a) stretch too far b) go past the target c) go below/above the target
+		- Visual indicator of where the nearest grapple target is
+			- some keybind to bring it up, optional
+		- Cooldown 
+	- Swing from the grapple- 
+		- should I allow it?
+			- More level design ideas
+			- Harder to program, more edge cases
+			- Maybe as an upgrade?
+		- If not, how do I make it obvious that you can't? 
+	- Slow down
+		- Down arrow?
+		- When you are Bhopping, it can be hard to retain speed
+	- Wall spring pad
+		- Instead of crashing, your momentum is flipped
+	- Bugs 
+		- Temp speed boost?
+		- Recharge grapple? ***
+	- Slide down walls
+		- Wall jump diagonally? (upgrade)
+	- Hazards:
+		- People walking- don't get squished (- I don't love this idea)
+			- Red indicator of where the foot will land
+		- Puddles 
+			- make you slippery, 
+			- if you land in one at high speed you spin out, unable to control character
+	- Upgrades: (do I want to include these?)
+		- Jump height
+		- hop "speed" (build up more momentum)
+		- Grapple upgrades:
+			- Swing from grapple
+			- Faster grapple pull
+			- Longer grapple range
+		- Wall jump
+	- Goal:
+		- Complete the level as fast as possible
+		- Race against other frogs
+
+	
+Story:
+	- you're a frog
+	- 
+		
+Sound effects:
+	- Wet plop when you hop
+	- Wet slap when you crash
+	- Springy (wave, wah wah) when you bhop
+
+Visual effects:
+	- Speed lines when you are going fast
+	- Screen curved around the edges?
+	- Screen shake when you crash
+	- Camera shifts to the right when you are moving fast (more time to react to upcoming obstacles)
+	
+	
+Player state machine:
+Idle - on ground
+- jump :=> hop
+Hop - in air
+- landed :=> idle
+- grapple initiated :=> grapple
+Grapple - grappling 
+- grapple released :=> idle
+
+
+Grapple:
+- shift pressed: visualize targetting
+- space pressed: attempt grapple
+- attempt grapple:
+	- set grapple cooldown
+	- calculate target
+		- if hit: set tongue end pos
+		- else: transition back to hop/idle state
+- mid-grapple:
+	- calculate should_break
+		- tongue angle too big (prevent swinging)
+		- target too far away
+		- frog turned away from target
+		- if should_break:
+			- transition back to hop/idle state
+		- else:
+			- remain in grapple state

@@ -28,6 +28,8 @@ max_jump_impulse = 800
 hop_impulse = 180
 air_control = 90
 jump_angle = 60
+grapple_force = 20000
+tongue_length = 600
 gravity_scl = 0.9
 forward_impulse = 150
 
@@ -42,6 +44,7 @@ offset_bottom = -295.0
 text = "Jump Charge:
 "
 script = ExtResource("2_2p17l")
+metadata/_edit_use_anchors_ = true
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(1, 83)
@@ -53,34 +56,332 @@ shape = SubResource("WorldBoundaryShape2D_835nx")
 
 [node name="Floor" type="Node" parent="."]
 
-[node name="FloorA2" parent="Floor" instance=ExtResource("2_u1v6x")]
-position = Vector2(197, -125)
-scale = Vector2(1, -14.64)
-
-[node name="FloorA" parent="Floor" instance=ExtResource("2_u1v6x")]
-position = Vector2(840, 112)
-scale = Vector2(172.84, 1)
-
-[node name="FloorA3" parent="Floor" instance=ExtResource("2_u1v6x")]
-position = Vector2(1081, -120)
-scale = Vector2(-12.32, 1)
-
-[node name="FloorA4" parent="Floor" instance=ExtResource("2_u1v6x")]
-position = Vector2(168, -59)
-scale = Vector2(-2.56, 1)
-
-[node name="FloorA5" parent="Floor" instance=ExtResource("2_u1v6x")]
-position = Vector2(1354, -206)
-scale = Vector2(12.0692, 3.10696)
-
 [node name="Grapple Tagets" type="Node" parent="."]
 
-[node name="GrappleTarget" parent="Grapple Tagets" instance=ExtResource("5_uwlq2")]
-position = Vector2(193, 47)
+[node name="foo" type="Node" parent="."]
+
+[node name="FloorA" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(-72, 87)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA3" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(169, -145)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA5" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(442, -231)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget" parent="foo" instance=ExtResource("5_uwlq2")]
+position = Vector2(-502, -56)
 scale = Vector2(1.83068, 2.3693)
 
-[node name="GrappleTarget2" parent="Grapple Tagets" instance=ExtResource("5_uwlq2")]
-position = Vector2(1085, -73)
+[node name="GrappleTarget2" parent="foo" instance=ExtResource("5_uwlq2")]
+position = Vector2(173, -98)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA2" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(-72, 87)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA4" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(169, -145)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA6" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(442, -231)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget3" parent="foo" instance=ExtResource("5_uwlq2")]
+position = Vector2(-502, -56)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget4" parent="foo" instance=ExtResource("5_uwlq2")]
+position = Vector2(173, -98)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA7" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(-72, 87)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA8" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(169, -145)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA9" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(442, -231)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget5" parent="foo" instance=ExtResource("5_uwlq2")]
+position = Vector2(-502, -56)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget6" parent="foo" instance=ExtResource("5_uwlq2")]
+position = Vector2(173, -98)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA10" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(-72, 87)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA11" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(169, -145)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA12" parent="foo" instance=ExtResource("2_u1v6x")]
+position = Vector2(442, -231)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget7" parent="foo" instance=ExtResource("5_uwlq2")]
+position = Vector2(-502, -56)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget8" parent="foo" instance=ExtResource("5_uwlq2")]
+position = Vector2(173, -98)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="foo2" type="Node" parent="."]
+
+[node name="FloorA" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(2690, 87)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA3" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(2931, -145)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA5" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(3204, -231)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget" parent="foo2" instance=ExtResource("5_uwlq2")]
+position = Vector2(2260, -56)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget2" parent="foo2" instance=ExtResource("5_uwlq2")]
+position = Vector2(2935, -98)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA2" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(2690, 87)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA4" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(2931, -145)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA6" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(3204, -231)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget3" parent="foo2" instance=ExtResource("5_uwlq2")]
+position = Vector2(2260, -56)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget4" parent="foo2" instance=ExtResource("5_uwlq2")]
+position = Vector2(2935, -98)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA7" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(2690, 87)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA8" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(2931, -145)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA9" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(3204, -231)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget5" parent="foo2" instance=ExtResource("5_uwlq2")]
+position = Vector2(2260, -56)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget6" parent="foo2" instance=ExtResource("5_uwlq2")]
+position = Vector2(2935, -98)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA10" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(2690, 87)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA11" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(2931, -145)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA12" parent="foo2" instance=ExtResource("2_u1v6x")]
+position = Vector2(3204, -231)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget7" parent="foo2" instance=ExtResource("5_uwlq2")]
+position = Vector2(2260, -56)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget8" parent="foo2" instance=ExtResource("5_uwlq2")]
+position = Vector2(2935, -98)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="foo3" type="Node" parent="."]
+
+[node name="FloorA" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(5461, 90)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA3" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(4515, -135)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA5" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(4788, -221)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(3844, -46)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget2" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(4519, -88)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA2" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(5461, 90)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA4" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(4515, -135)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA6" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(4788, -221)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget3" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(3844, -46)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget4" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(4519, -88)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA7" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(5461, 90)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA8" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(4515, -135)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA9" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(4788, -221)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget5" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(3844, -46)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget6" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(4519, -88)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA10" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(5461, 90)
+scale = Vector2(172.84, 1)
+
+[node name="FloorA11" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(4515, -135)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA12" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(4788, -221)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget7" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(3844, -46)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget8" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(4519, -88)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA13" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(6200, -105)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA14" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(6473, -191)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget9" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(5529, -16)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget10" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(6204, -58)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA15" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(6200, -105)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA16" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(6473, -191)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget11" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(5529, -16)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget12" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(6204, -58)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA17" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(6200, -105)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA18" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(6473, -191)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget13" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(5529, -16)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget14" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(6204, -58)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="FloorA19" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(6200, -105)
+rotation = -3.14159
+scale = Vector2(12.32, -1)
+
+[node name="FloorA20" parent="foo3" instance=ExtResource("2_u1v6x")]
+position = Vector2(6473, -191)
+scale = Vector2(12.0692, 3.10696)
+
+[node name="GrappleTarget15" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(5529, -16)
+scale = Vector2(1.83068, 2.3693)
+
+[node name="GrappleTarget16" parent="foo3" instance=ExtResource("5_uwlq2")]
+position = Vector2(6204, -58)
 scale = Vector2(1.83068, 2.3693)
 
 [connection signal="draw" from="Player/Camera2D/JumpChargeLabel" to="Player/Camera2D/JumpChargeLabel" method="_on_draw"]

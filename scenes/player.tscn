@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://dh2bahnrqgi57"]
+[gd_scene load_steps=9 format=3 uid="uid://dh2bahnrqgi57"]
 
 [ext_resource type="Texture2D" uid="uid://cogh53dbxxt64" path="res://assets/idle.png" id="1_50xgd"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_fx17r"]
 [ext_resource type="PackedScene" uid="uid://cplg772x4a7pj" path="res://scenes/tongue.tscn" id="3_tt86v"]
+[ext_resource type="Script" path="res://scenes/state.gd" id="4_q08bw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g62ff"]
 size = Vector2(23, 12)
@@ -34,7 +35,6 @@ lock_rotation = true
 contact_monitor = true
 max_contacts_reported = 99
 script = ExtResource("1_fx17r")
-tongue_length = 400
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-2.5, 5)
@@ -52,6 +52,9 @@ sprite_frames = SubResource("SpriteFrames_x1sp1")
 animation = &"idle"
 autoplay = "idle"
 frame_progress = 0.575071
+
+[node name="State" type="Node" parent="."]
+script = ExtResource("4_q08bw")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]
